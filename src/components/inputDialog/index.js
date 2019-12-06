@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Input } from 'antd';
+import { Modal, Input } from 'antd';
 
 class InputDialog extends React.Component {
   state = { visible: false, title: "", value: "" };
@@ -24,6 +24,7 @@ class InputDialog extends React.Component {
       visible: false,
     });
   };
+  
   handleOnChange = e => {
     this.setState({value: e.target.value})
   }

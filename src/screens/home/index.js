@@ -1,8 +1,13 @@
 import React from 'react';
 import { Layout, Button, Menu, Breadcrumb, Icon, Typography, List, Checkbox, Modal } from 'antd';
+import AuthAPI from "../../api/auth"
+import { Redirect } from "react-router-dom";
 import 'antd/dist/antd.css';
 import './index.css';
-import InputDialog from '../../components/inputDialog';
+import WorkspaceListItem from '../../components/workspaceListItem';
+import AddWorkspaceDialog from '../../components/addWorkspaceDialog';
+import { connect } from 'react-redux'
+import { getAllWorkspace } from "../../actions/workspace"
 
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
@@ -24,13 +29,12 @@ const data = [
   },
 ];
 class HomeScreen extends React.Component {
+  state = { redirect: false, showAddWorkspaceDialog: false }
 
   showEditDialog = () => {
-    this.inputDialogRef.showModal("Edit")
   }
-  
+
   showAddDialog = () => {
-    this.inputDialogRef.showModal("Add")
   }
 
   showDeleteConfirm = () => {
@@ -49,39 +53,58 @@ class HomeScreen extends React.Component {
     });
   }
 
+  handleAddWorkspace = () => {
+    this.setState({showAddWorkspaceDialog: true})
+  }
+
+  handleRedirect = () => {
+    if(AuthAPI.isLoggedIn()) this.setState({redirect: false})
+    else this.setState({redirect: true})
+  }
+
+  getWorkspaces = async () => {
+    
+  }
+
+  handleCompleteAddWorkspace = () => {
+    this.setState({ showAddWorkspaceDialog: false })
+  }
+
+  handleLogout = () => {
+    AuthAPI.logout()
+    this.setState({redirect: true})
+  }
+
   constructor(props){
     super(props)
-    this.inputDialogRef = null
+    this.addWorkspaceDialogRef = null
+  }
+
+  componentDidMount(){
+    this.handleRedirect()
+    this.props.getAllWorkspace()
   }
 
   render() {
+    if(this.state.redirect){
+      return (<Redirect to={"/login"}/>)
+    }
     return (
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider>
-          <Menu theme="dark">
-            <SubMenu key="sub1" title="User">
-              <SubMenu key="sub22" title="List">
-                <Menu.Item key="42">Bill</Menu.Item>
-                <Menu.Item key="52">Alex</Menu.Item>
-              </SubMenu>
-              <Menu.Item style={{color:"green"}} onClick={this.showAddDialog}>Add Todo</Menu.Item>
-              <Menu.Item style={{color:"blue"}} onClick={this.showEditDialog}>Rename workspace</Menu.Item>
-              <Menu.Item style={{color:"red"}} onClick={this.showDeleteConfirm}>Delete workspace</Menu.Item>
-            </SubMenu>
-            <SubMenu key="sub2" title="Team">
-              <SubMenu key="sub222" title="List">
-                <Menu.Item key="6">Team 1</Menu.Item>
-                <Menu.Item key="621">Team 2</Menu.Item>
-              </SubMenu>
-              <Menu.Item style={{color:"green"}}>Add Todo</Menu.Item>
-              <Menu.Item style={{color:"blue"}}>Rename workspace</Menu.Item>
-              <Menu.Item key="5" style={{color:"red"}}>Delete workspace</Menu.Item>
-            </SubMenu>
-            <Menu.Item key="123">
+        <Sider style={{ background: "white"}}>
+          <Menu theme="light">
+            <List
+              itemLayout="horizontal"
+              dataSource={this.props.workspaces}
+              renderItem={item => (
+                  <WorkspaceListItem item={item}/>
+              )}
+            />
+            <Menu.Item key="123" onClick={this.handleAddWorkspace}>
               <Icon style={{color: "green"}} type="file-add" />
               <span style={{color: "green"}}>Add Workspace</span>
             </Menu.Item>
-            <Menu.Item key="9">
+            <Menu.Item key="9" onClick={this.handleLogout}>
               <Icon style={{color: "red"}} type="logout" />
               <span style={{color: "red"}}>Logout</span>
             </Menu.Item>
@@ -93,7 +116,7 @@ class HomeScreen extends React.Component {
               <Breadcrumb.Item>Workspace: User</Breadcrumb.Item>
             </Breadcrumb>
             <Title level={2}>
-              h1. Ant Design 
+              h1. Ant Design
               <Button type="primary" shape="circle" icon="edit" style={{marginLeft: 10}}></Button>
               <Button type="danger" shape="circle" icon="delete" style={{marginLeft: 10}}></Button>
             </Title>
@@ -109,10 +132,22 @@ class HomeScreen extends React.Component {
             />
           </Content>
         </Layout>
-        <InputDialog ref={i => this.inputDialogRef = i}/>
+        <AddWorkspaceDialog show={this.state.showAddWorkspaceDialog} onComplete={this.handleCompleteAddWorkspace}/>
       </Layout>
     )
   }
 }
 
-export default HomeScreen
+const mapStateToProps = (state) => {
+  return {
+    workspaces: state.workspace.list
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllWorkspace: () => dispatch(getAllWorkspace())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

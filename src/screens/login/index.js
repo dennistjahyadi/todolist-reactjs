@@ -1,19 +1,52 @@
 import React from 'react';
-import { Form, Icon, Input, Button, Row, Col } from 'antd';
+import { Form, Icon, Input, Button, Row, Col, Modal } from 'antd';
+import { Redirect } from "react-router-dom";
+import AuthAPI from "../../api/auth"
 import 'antd/dist/antd.css';
 import './index.css';
 
 class LoginScreen extends React.Component {
+  state = { username: "", password: "", redirect: false };
+
+  // handleChange = e => {
+  //   this.state({
+  //     [e.target.id]: e.target.value
+  //   })
+  // }
+
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        try{
+          const result = await AuthAPI.login(values.username, values.password)
+          sessionStorage.setItem('userLoggedIn', JSON.stringify({ id: result.id, username: result.username, token: result.token }))
+          this.setState({redirect: true})
+        }catch(err){
+          sessionStorage.removeItem('userLoggedIn')
+          this.setState({redirect: false})
+          this.loginFailed()
+        }
       }
     });
   };
 
+  loginFailed = () => {
+    Modal.error({
+      title: 'Login Failed',
+      content: 'Wrong username or password',
+    });
+  }
+
+  componentDidMount(){
+    if(AuthAPI.isLoggedIn()) this.setState({redirect: true})
+    else this.setState({redirect: false})
+  }
+
   render() {
+    if(this.state.redirect){
+      return (<Redirect to={"/"}/>)
+    }
     const { getFieldDecorator } = this.props.form;
     return (
       <Row type="flex" justify="center" align="middle" style={{minHeight: '100vh'}}>
@@ -53,6 +86,6 @@ class LoginScreen extends React.Component {
   }
 }
 
-const WrappedLoginScreen = Form.create({ name: 'normal_login' })(LoginScreen);
+const WrappedLoginScreen = Form.create({ name: 'login_form' })(LoginScreen);
 
 export default WrappedLoginScreen
