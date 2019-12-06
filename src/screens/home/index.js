@@ -6,8 +6,9 @@ import 'antd/dist/antd.css';
 import './index.css';
 import WorkspaceListItem from '../../components/workspaceListItem';
 import AddWorkspaceDialog from '../../components/addWorkspaceDialog';
+import EditInputDialog from '../../components/editInputDialog';
 import { connect } from 'react-redux'
-import { getAllWorkspace } from "../../actions/workspace"
+import { getAllWorkspace, deleteWorkspace, editWorkspace } from "../../actions/workspace"
 
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
@@ -29,23 +30,17 @@ const data = [
   },
 ];
 class HomeScreen extends React.Component {
-  state = { redirect: false, showAddWorkspaceDialog: false }
+  state = { redirect: false }
 
-  showEditDialog = () => {
-  }
-
-  showAddDialog = () => {
-  }
-
-  showDeleteConfirm = () => {
-    
+  showDeleteConfirm = (id) => {
+    const { deleteWorkspace } = this.props
     confirm({
       title: 'Are you sure delete this?',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log('OK');
+        deleteWorkspace(id)
       },
       onCancel() {
         console.log('Cancel');
@@ -53,21 +48,12 @@ class HomeScreen extends React.Component {
     });
   }
 
-  handleAddWorkspace = () => {
-    this.setState({showAddWorkspaceDialog: true})
-  }
+  handleAddWorkspace = () => this.addWorkspaceDialogRef.showModal()
+  handleEditWorkspace = (id, name) => this.editInputDialogRef.showModal(id, "Edit Workspace", name)
 
   handleRedirect = () => {
     if(AuthAPI.isLoggedIn()) this.setState({redirect: false})
     else this.setState({redirect: true})
-  }
-
-  getWorkspaces = async () => {
-    
-  }
-
-  handleCompleteAddWorkspace = () => {
-    this.setState({ showAddWorkspaceDialog: false })
   }
 
   handleLogout = () => {
@@ -78,6 +64,7 @@ class HomeScreen extends React.Component {
   constructor(props){
     super(props)
     this.addWorkspaceDialogRef = null
+    this.editInputDialogRef = null
   }
 
   componentDidMount(){
@@ -97,7 +84,7 @@ class HomeScreen extends React.Component {
               itemLayout="horizontal"
               dataSource={this.props.workspaces}
               renderItem={item => (
-                  <WorkspaceListItem item={item}/>
+                  <WorkspaceListItem item={item} onClickDeleteWorkspace={this.showDeleteConfirm} onClickEditWorkspace={this.handleEditWorkspace}/>
               )}
             />
             <Menu.Item key="123" onClick={this.handleAddWorkspace}>
@@ -132,7 +119,9 @@ class HomeScreen extends React.Component {
             />
           </Content>
         </Layout>
-        <AddWorkspaceDialog show={this.state.showAddWorkspaceDialog} onComplete={this.handleCompleteAddWorkspace}/>
+        <EditInputDialog ref={i => this.editInputDialogRef = i} />
+
+        <AddWorkspaceDialog  ref={i => this.addWorkspaceDialogRef = i}/>
       </Layout>
     )
   }
@@ -146,7 +135,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllWorkspace: () => dispatch(getAllWorkspace())
+    getAllWorkspace: () => dispatch(getAllWorkspace()),
+    deleteWorkspace: (id) => dispatch(deleteWorkspace(id))
   }
 }
 

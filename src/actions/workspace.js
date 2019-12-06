@@ -13,22 +13,30 @@ export const createWorkspace = (name) => {
       const result = await WorkspaceAPI.create(name)
       dispatch({ type: 'CREATE_WORKSPACE', workspace: result })
     }catch(err){
-      dispatch({ type: 'CREATE_WORKSPACE_ERROR', err })
+      console.log("CREATE_WORKSPACE_ERROR", err)
     }
   }
 }
 
-export const editWorkspace = (name) => {
+export const editWorkspace = (id, name) => {
   return async (dispatch, getState) => {
-
-    //dispatch({ type: 'EDITED_WORKSPACE', workspaces })
+    try{
+      await WorkspaceAPI.update(id, name)
+      dispatch({ type: 'EDIT_WORKSPACE', editedWorkspace: {id, name} })
+    }catch(err){
+      console.log("EDIT_WORKSPACE_ERROR", err)
+    }
   }
 }
 
 export const deleteWorkspace = (id) => {
   return async (dispatch, getState) => {
-
-    //dispatch({ type: 'DELETED_WORKSPACES', workspaces })
+    try{
+      await WorkspaceAPI.destroy(id)
+      dispatch({ type: 'DELETE_WORKSPACE', deletedId: id })
+    }catch(err){
+      console.log("DELETE_WORKSPACE_ERROR", err)
+    }
   }
 }
 

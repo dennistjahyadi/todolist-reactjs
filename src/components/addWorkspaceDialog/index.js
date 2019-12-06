@@ -1,34 +1,22 @@
 import React from 'react';
 import { Modal, Input } from 'antd';
-import WorkspaceAPI from '../../api/workspace';
 import { connect } from 'react-redux'
 import { createWorkspace } from "../../actions/workspace"
 
 class AddWorkspaceDialog extends React.Component {
-  state = { value: "" };
-
-
-  handleOk = async e => {
-    //const result = await WorkspaceAPI.create(this.state.value)
-    this.props.createWorkspace(this.state.value)
-    this.props.onComplete()
-    this.setState({value: ""})
-  };
-
-  handleCancel = e => {
-    this.setState({ visible: false });
-  };
+  state = { value: "", visible: false };
   
-  handleOnChange = e => {
-    this.setState({value: e.target.value})
-  }
+  showModal = () => this.setState({ visible: true, value: "" });
+  handleOnChange = e => this.setState({value: e.target.value})
+  handleCancel = e => this.setState({visible: false})
+
+  handleOk = e => {
+    this.props.createWorkspace(this.state.value)
+    this.setState({value: "", visible: false})
+  };
 
   constructor(props){
     super(props)
-  }
-
-  componentDidMount(){
-    this.setState({visible: this.props.show})
   }
 
   render() {
@@ -36,7 +24,7 @@ class AddWorkspaceDialog extends React.Component {
       <div>
         <Modal
           title={"Add Workspace"}
-          visible={this.props.show}
+          visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
@@ -53,4 +41,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(AddWorkspaceDialog)
+export default connect(null, mapDispatchToProps, null, { forwardRef: true })(AddWorkspaceDialog)
