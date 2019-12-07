@@ -2,8 +2,8 @@ import TodoDetailsAPI from '../api/todoDetails';
 
 export const getAllTodoDetails = (todoId) => {
   return async (dispatch, getState) => {
-      const todos = await TodoDetailsAPI.get(todoId)
-      dispatch({ type: 'GET_ALL_TODO_DETAILS', todos })
+      const todoDetails = await TodoDetailsAPI.get(todoId)
+      dispatch({ type: 'GET_ALL_TODO_DETAILS', todoDetails })
   }
 }
 
@@ -11,7 +11,7 @@ export const createTodoDetails = (todoId, content) => {
   return async (dispatch, getState) => {
     try{
       const result = await TodoDetailsAPI.create(todoId, content)
-      dispatch({ type: 'CREATE_TODO_DETAILS', todo: result })
+      dispatch({ type: 'CREATE_TODO_DETAILS', todoDetails: result })
     }catch(err){
       console.log("CREATE_TODO_DETAILS_ERROR", err)
     }

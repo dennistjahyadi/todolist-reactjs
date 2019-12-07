@@ -34,7 +34,7 @@ class InputDialog extends React.Component {
       }else if(table === "todos"){
         this.props.createTodo(extraData.workspaceId, value)
       }else if(table === "todoDetails"){
-        this.props.createWorkspace(extraData.todoId, value)
+        this.props.createTodoDetails(extraData.todoId, value)
       }
     }else if(type === "edit"){
       if(table === "workspaces"){
