@@ -1,6 +1,5 @@
 const initState = {
-  list: [],
-  currentWorkspace: {}
+  list: []
 }
 
 const workspaceReducer = (state = initState, action) => {
@@ -37,13 +36,11 @@ const workspaceReducer = (state = initState, action) => {
         if(workspace.id === action.editedWorkspace.id) workspace.name = action.editedWorkspace.name
         return workspace
       })
-      if(state.currentWorkspace.id === action.editedWorkspace.id) newState.currentWorkspace.name = action.editedWorkspace.name
 
       return newState
 
     case "DELETE_WORKSPACE":
       newState.list = state.list.filter(workspace => workspace.id !== action.deletedId)
-      if(state.currentWorkspace.id === action.deletedId) newState.currentWorkspace = null
       return newState
 
     case "DELETE_TODO":
@@ -53,10 +50,6 @@ const workspaceReducer = (state = initState, action) => {
         return workspace
       })
 
-      return newState
-
-    case "SELECTED_WORKSPACE":
-      newState.currentWorkspace = action.workspace
       return newState
 
     default:

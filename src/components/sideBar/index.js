@@ -22,7 +22,7 @@ class SideBar extends React.Component {
   handleDeleteWorkspace = (id) => this.props.onClickDeleteWorkspace(id)
   handleAddTodo = (workspaceId) => this.props.onClickAddTodo(workspaceId)
   handleLogout = () => this.props.onClickLogout()
-  handleClickTodo = (workspace, todo) => this.props.onClickTodo(workspace, todo)
+  handleClickTodo = (todo) => this.props.onClickTodo(todo)
   
   constructor(props){
     super(props)

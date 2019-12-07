@@ -10,6 +10,14 @@ export const getAllTodo = (workspaceId) => {
   }
 }
 
+export const getCurrentTodo = (todoId) => {
+  return async (dispatch, getState) => {
+    const todo = await TodoAPI.getDetails(todoId)
+    dispatch({ type: 'GET_CURRENT_TODO', todo })
+  }
+}
+
+
 export const createTodo = (workspaceId, content) => {
   return async (dispatch, getState) => {
     try{
@@ -41,9 +49,4 @@ export const deleteTodo = (id) => {
       console.log("DELETE_TODO_ERROR", err)
     }
   }
-}
-
-export const selectedTodo = (todo) => {
-  return async (dispatch, getState) => dispatch({ type: 'SELECTED_TODO', todo })
-  
 }

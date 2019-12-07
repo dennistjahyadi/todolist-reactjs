@@ -6,8 +6,8 @@ import 'antd/dist/antd.css';
 import './index.css';
 import InputDialog from '../../components/inputDialog';
 import { connect } from 'react-redux'
-import { deleteWorkspace, selectedWorkspace } from "../../actions/workspace"
-import { deleteTodo, selectedTodo } from "../../actions/todo"
+import { deleteWorkspace } from "../../actions/workspace"
+import { deleteTodo, getCurrentTodo } from "../../actions/todo"
 import { deleteTodoDetails, toggleCompleteTodoDetails } from "../../actions/todoDetails"
 import SideBar from '../../components/sideBar';
 import HomeContent from '../../components/HomeContent';
@@ -52,11 +52,6 @@ class HomeScreen extends React.Component {
     this.inputDialogRef.showModal("create", "todoDetails", null, "Add Todo Details", "", extraData )
   }
 
-  handleClickTodo = (workspace, todo) => {
-    this.props.selectedWorkspace(workspace)
-    this.props.selectedTodo(todo)
-  }
-
   handleRedirect = () => {
     if(AuthAPI.isLoggedIn()) this.setState({redirect: false})
     else this.setState({redirect: true})
@@ -66,6 +61,8 @@ class HomeScreen extends React.Component {
     AuthAPI.logout()
     this.setState({redirect: true})
   }
+  
+  handleClickTodo = (todo) => { this.props.getCurrentTodo(todo.id) }
 
   constructor(props){
     super(props)
@@ -75,6 +72,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount(){
     this.handleRedirect()
+    if(this.todoId) this.props.getCurrentTodo(this.todoId)
   }
 
   render() {
@@ -93,17 +91,13 @@ class HomeScreen extends React.Component {
         />
       
         <Layout>
-          {(this.props.currentWorkspace && this.props.currentTodo)? 
-            <HomeContent 
+          <HomeContent 
             onClickEditTodo={this.handleEditTodo}
             onClickDeleteTodo={this.handleDeleteTodo}
             onClickAddTodoDetails={this.handleAddTodoDetails}
             onClickEditTodoDetails={this.handleEditTodoDetails}
             onClickDeleteTodoDetails={this.handleDeleteTodoDetails}
-            onToggleComplete={this.handleOnToggleComplete}
-            />
-            : null}
-          
+            onToggleComplete={this.handleOnToggleComplete}/>
         </Layout>
         <InputDialog ref={i => this.inputDialogRef = i} />
       </Layout>
@@ -111,17 +105,9 @@ class HomeScreen extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    currentWorkspace: state.workspace.currentWorkspace,
-    currentTodo: state.todo.currentTodo
-  }
-}
-
 const mapDispatchToProps = (dispatch) => {
   return {
-    selectedWorkspace: (workspace) => dispatch(selectedWorkspace(workspace)),
-    selectedTodo: (todo) => dispatch(selectedTodo(todo)),
+    getCurrentTodo: (todo) => dispatch(getCurrentTodo(todo)),
     deleteWorkspace: (id) => dispatch(deleteWorkspace(id)),
     deleteTodo: (id) => dispatch(deleteTodo(id)),
     deleteTodoDetails: (id) => dispatch(deleteTodoDetails(id)),
@@ -129,4 +115,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
+export default connect(null, mapDispatchToProps)(HomeScreen)

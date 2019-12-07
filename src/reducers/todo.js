@@ -30,8 +30,16 @@ const todoReducer = (state = initState, action) => {
       if(state.currentTodo.id === action.deletedId) newState.currentTodo = null
       return newState
       
-    case "SELECTED_TODO":
+    case "GET_CURRENT_TODO":
       newState.currentTodo = action.todo
+      return newState
+    
+    case "DELETE_WORKSPACE":
+      if(newState.currentTodo.Workspace.id === action.deletedId) newState.currentTodo = null
+      return newState
+    
+    case "EDIT_WORKSPACE":
+      if(newState.currentTodo.Workspace.id === action.editedWorkspace.id) newState.currentTodo.Workspace.name = action.editedWorkspace.name
       return newState
 
     default:

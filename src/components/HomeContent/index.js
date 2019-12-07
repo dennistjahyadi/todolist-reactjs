@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getAllTodoDetails } from "../../actions/todoDetails"
 
 const { Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 //  props:
 //  onClickEditTodo: function|required () => { return (todoId, content) }
@@ -35,11 +35,11 @@ class HomeContent extends React.Component {
   }
 
   render() {
-    if(!this.props.currentTodo || !this.props.currentWorkspace) return null
+    if(!this.props.currentTodo) return null
     return (
       <Content style={{ margin: '25px', minHeight: 360, background: '#fff'  }}>
         <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>Workspace: {this.props.currentWorkspace.name}</Breadcrumb.Item>
+          <Breadcrumb.Item>Workspace: {(this.props.currentTodo.Workspace)?this.props.currentTodo.Workspace.name:""} </Breadcrumb.Item>
         </Breadcrumb>
         <Title level={2}>
           {this.props.currentTodo.content}
@@ -50,10 +50,13 @@ class HomeContent extends React.Component {
         {this.props.todoDetails.map(item => {
           const editButton = <Icon type="edit" style={{color: "blue"}} onClick={() => this.handleEditTodoDetails(item.id, item.content)}/>
           const deleteButton = <Icon type="delete" style={{color: "red"}} onClick={() => this.handleDeleteTodoDetails(item.id)}/>
+          const text = (item.isCompleted)? <Text delete>{item.content}</Text> : <Text>{item.content}</Text>
           return(
-            <List.Item key={item.id} style={{ display: "flex", marginLeft: 100}} 
+            <List.Item key={item.id} style={{ display: "flex", marginTop:10, justifyContent:"center"}} 
               actions={[editButton, deleteButton]}>
-              <Checkbox checked={item.isCompleted} onClick={() => this.handleToggleComplete(item.id, !item.isCompleted)}>{item.content}</Checkbox>
+              <Checkbox checked={item.isCompleted} onClick={() => this.handleToggleComplete(item.id, !item.isCompleted)}>
+                {text}
+              </Checkbox>
             </List.Item>
           )
         })}
@@ -63,9 +66,8 @@ class HomeContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    return {
+  return {
     todoDetails: state.todoDetails.list,
-    currentWorkspace: state.workspace.currentWorkspace,
     currentTodo: state.todo.currentTodo
   }
 }

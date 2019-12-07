@@ -40,8 +40,3 @@ export const deleteWorkspace = (id) => {
     }
   }
 }
-
-export const selectedWorkspace = (workspace) => {
-  return async (dispatch, getState) => dispatch({ type: 'SELECTED_WORKSPACE', workspace })
-  
-}

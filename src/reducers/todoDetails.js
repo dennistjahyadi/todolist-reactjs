@@ -31,7 +31,7 @@ const todoDetailsReducer = (state = initState, action) => {
     case "DELETE_TODO_DETAILS":
       newState.list = state.list.filter(todoDetails => todoDetails.id !== action.deletedId)
       return newState
-
+    
     default:
       return state
   }

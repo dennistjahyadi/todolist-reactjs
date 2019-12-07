@@ -36,6 +36,22 @@ class TodoAPI{
     
     return ResponseAPI.handleResponse(response)
   }
+  
+  /**
+   * 
+   * @param {string} todoId 
+   */
+  static async getDetails(todoId){
+    const response = await fetch(process.env.REACT_APP_API_URL + "todos/details/" + todoId, {
+        method: 'GET',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + AuthAPI.getUserToken()
+        }
+    })
+    
+    return ResponseAPI.handleResponse(response)
+  }
 
   /**
    * 

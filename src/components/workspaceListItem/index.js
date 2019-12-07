@@ -1,10 +1,10 @@
 import React from 'react';
-import { Icon, Button, Collapse, List, Typography, Row, Col, Modal } from 'antd';
+import { Icon, Button, Collapse, List, Typography, Row, Col, Menu } from 'antd';
 import TodoListItem from "../todoListItem"
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux'
 import { getAllTodo } from "../../actions/todo"
-
+import { Link } from "react-router-dom";
 const { Panel } = Collapse;
 const { Text } = Typography;
 class WorkspaceListItem extends React.Component {
@@ -40,9 +40,12 @@ class WorkspaceListItem extends React.Component {
             <Panel header={item.name} key="1" style={myStyle.rowColor}>
               <Button onClick={this.handleAddTodo}><Icon type="plus" style={{color: "green"}} /> Add Todo</Button>
               {(this.props.item)?this.props.item.Todos.map(todo => {
+                const url = "/todo/" + todo.id
                 return (
                 <List.Item key={todo.id}>
-                  <Text onClick={() => this.props.onClickTodo(this.props.item, todo)}>{todo.content}</Text>
+                  <Link to={url}>
+                    <Text onClick={() => this.props.onClickTodo(todo)} style={{display: "flex"}} >{todo.content}</Text>
+                  </Link>
                 </List.Item>
                 )
               }) : null }
