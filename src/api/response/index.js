@@ -14,8 +14,7 @@ class ResponseAPI{
       if(result.status === 403) {
         sessionStorage.removeItem("userLoggedIn")
         throw new CustomError('auth-failed', 'Wrong username or password')
-      }
-      else throw new CustomError('auth-failed', 'Response status: '+ result.status)
+      } else throw new CustomError('general-error', 'Response status: '+ result.status)
     }
   }
 

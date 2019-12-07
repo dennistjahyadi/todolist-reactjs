@@ -17,6 +17,7 @@ class App extends React.Component{
       <Router>
         <div className="App">
             <Route path="/" exact component={HomeScreen} />
+            <Route path="/todo/:todoId" exact component={HomeScreen} />
             <Route path="/login" exact component={LoginScreen} />
         </div>
       </Router>

@@ -1,9 +1,12 @@
 import React from 'react';
-import { Icon, Layout, Collapse, Menu, Typography, Row, Col, Modal } from 'antd';
+import { Icon, Button, Collapse, List, Typography, Row, Col, Modal } from 'antd';
 import TodoListItem from "../todoListItem"
 import 'antd/dist/antd.css';
-const { Panel } = Collapse;
+import { connect } from 'react-redux'
+import { getAllTodo } from "../../actions/todo"
 
+const { Panel } = Collapse;
+const { Text } = Typography;
 class WorkspaceListItem extends React.Component {
   state = { visible: false, title: "", value: "" };
 
@@ -15,8 +18,16 @@ class WorkspaceListItem extends React.Component {
     this.props.onClickDeleteWorkspace(this.props.item.id)
   }
 
+  handleAddTodo = () => {
+    this.props.onClickAddTodo(this.props.item.id)
+  }
+
   constructor(props){
     super(props)
+  }
+
+  componentDidMount(){
+    this.props.getAllTodo(this.props.item.id)
   }
 
   render() {
@@ -24,14 +35,24 @@ class WorkspaceListItem extends React.Component {
 
     return (
       <Row style={{...myStyle.rowColor, marginBottom: 10}}>
-        <Col span={20}>
+        <Col span={21}>
           <Collapse style={myStyle.rowColor}>
             <Panel header={item.name} key="1" style={myStyle.rowColor}>
+              <Button onClick={this.handleAddTodo}><Icon type="plus" style={{color: "green"}} /> Add Todo</Button>
+              {(this.props.item)?this.props.item.Todos.map(todo => {
+                return (
+                <List.Item key={todo.id}>
+                  <Text onClick={() => this.props.onClickTodo(this.props.item, todo)}>{todo.content}</Text>
+                </List.Item>
+                )
+              }) : null }
+              
               <TodoListItem/>
             </Panel>
           </Collapse>
         </Col>
-        <Col span={4}>
+        <Col span={3}>
+
           <Icon type="edit" style={{color: "blue"}} onClick={this.handleEdit}/>
             <br/>
           <Icon type="delete" style={{color: "red"}} onClick={this.handleDelete}/>
@@ -43,4 +64,11 @@ class WorkspaceListItem extends React.Component {
 const myStyle = {
   rowColor: { backgroundColor: "white", borderColor: "white" }
 };
-export default WorkspaceListItem
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllTodo: (workspaceId) => dispatch(getAllTodo(workspaceId))
+  }
+}
+
+export default connect(null, mapDispatchToProps)(WorkspaceListItem)

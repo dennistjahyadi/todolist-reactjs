@@ -11,6 +11,7 @@ export const createWorkspace = (name) => {
   return async (dispatch, getState) => {
     try{
       const result = await WorkspaceAPI.create(name)
+      result.Todos = []
       dispatch({ type: 'CREATE_WORKSPACE', workspace: result })
     }catch(err){
       console.log("CREATE_WORKSPACE_ERROR", err)
@@ -40,3 +41,7 @@ export const deleteWorkspace = (id) => {
   }
 }
 
+export const selectedWorkspace = (workspace) => {
+  return async (dispatch, getState) => dispatch({ type: 'SELECTED_WORKSPACE', workspace })
+  
+}

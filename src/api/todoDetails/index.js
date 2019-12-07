@@ -1,32 +1,30 @@
 import ResponseAPI from '../response';
 import AuthAPI from '../auth'
 
-class TodoAPI{
+class WorkspaceAPI{
 
   /**
    * 
-   * @param {string} workspaceId 
+   * @param {string} todoId 
    * @param {string} content 
    */
-  static async create(workspaceId, content){
-    const response = await fetch(process.env.REACT_APP_API_URL + "todos", {
+  static async create(todoId, content){
+    console.log(todoId, content)
+
+    const response = await fetch(process.env.REACT_APP_API_URL + "tododetails", {
         method: 'POST',
-        body: JSON.stringify({ workspaceId: workspaceId, content: content }),
+        body: JSON.stringify({ todoId: todoId, content: content }),
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + AuthAPI.getUserToken()
         }
     })
+    console.log(response)
     return ResponseAPI.handleResponse(response)
   }
 
-  /**
-   * 
-   * @param {string} workspaceId 
-   */
-  static async get(workspaceId = ""){
-
-    const response = await fetch(process.env.REACT_APP_API_URL + "todos/" + workspaceId, {
+  static async get(todoId){
+    const response = await fetch(process.env.REACT_APP_API_URL + "tododetails/" + todoId, {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -43,7 +41,7 @@ class TodoAPI{
    * @param {string} content 
    */
   static async update(id, content){
-    const response = await fetch(process.env.REACT_APP_API_URL + "todos/update", {
+    const response = await fetch(process.env.REACT_APP_API_URL + "tododetails/update", {
         method: 'POST',
         body: JSON.stringify({ id, content }),
         headers: { 
@@ -60,7 +58,7 @@ class TodoAPI{
    * @param {string} id 
    */
   static async destroy(id){
-    const response = await fetch(process.env.REACT_APP_API_URL + "todos/destroy", {
+    const response = await fetch(process.env.REACT_APP_API_URL + "tododetails/destroy", {
         method: 'POST',
         body: JSON.stringify({ id }),
         headers: { 
@@ -72,6 +70,7 @@ class TodoAPI{
     return ResponseAPI.handleResponse(response)
   }
 
+
 }
 
-export default TodoAPI
+export default WorkspaceAPI

@@ -15,7 +15,7 @@ class AuthAPI{
           'Content-Type': 'application/json'
         }
     })
-    
+
     return ResponseAPI.handleResponse(response)
   }
 
@@ -29,8 +29,10 @@ class AuthAPI{
   }
 
   static getUserToken(){
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn")
-    return JSON.parse(userLoggedIn).token
+    try{
+      const userLoggedIn = sessionStorage.getItem("userLoggedIn")
+      return JSON.parse(userLoggedIn).token
+    }catch(err){}
   }
 
 }
