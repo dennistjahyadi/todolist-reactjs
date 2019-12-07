@@ -11,10 +11,11 @@ import { deleteTodo, getCurrentTodo } from "../../actions/todo"
 import { deleteTodoDetails, toggleCompleteTodoDetails } from "../../actions/todoDetails"
 import SideBar from '../../components/sideBar';
 import HomeContent from '../../components/HomeContent';
+import { getAllTodoDetails } from "../../actions/todoDetails"
 
 const { confirm } = Modal;
 class HomeScreen extends React.Component {
-  state = { redirect: false }
+  state = { redirect: false, currentTodoId: null }
 
   showDeleteConfirm = (table, id) => {
     const { deleteWorkspace, deleteTodo, deleteTodoDetails } = this.props
@@ -62,7 +63,16 @@ class HomeScreen extends React.Component {
     this.setState({redirect: true})
   }
   
-  handleClickTodo = (todo) => { this.props.getCurrentTodo(todo.id) }
+  handleClickTodo = (todo) => { 
+    this.fetchAllTodoDetails(todo.id)
+  }
+
+  fetchAllTodoDetails = (todoId) => {
+    if(todoId) {
+      this.props.getAllTodoDetails(todoId)
+      this.props.getCurrentTodo(todoId)
+    }
+  }
 
   constructor(props){
     super(props)
@@ -72,7 +82,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount(){
     this.handleRedirect()
-    if(this.todoId) this.props.getCurrentTodo(this.todoId)
+    this.fetchAllTodoDetails(this.todoId)
   }
 
   render() {
@@ -92,6 +102,7 @@ class HomeScreen extends React.Component {
       
         <Layout>
           <HomeContent 
+            todoId={this.state.currentTodoId}
             onClickEditTodo={this.handleEditTodo}
             onClickDeleteTodo={this.handleDeleteTodo}
             onClickAddTodoDetails={this.handleAddTodoDetails}
@@ -111,7 +122,8 @@ const mapDispatchToProps = (dispatch) => {
     deleteWorkspace: (id) => dispatch(deleteWorkspace(id)),
     deleteTodo: (id) => dispatch(deleteTodo(id)),
     deleteTodoDetails: (id) => dispatch(deleteTodoDetails(id)),
-    toggleCompleteTodoDetails: (id, isCompleted) => dispatch(toggleCompleteTodoDetails(id, isCompleted))
+    toggleCompleteTodoDetails: (id, isCompleted) => dispatch(toggleCompleteTodoDetails(id, isCompleted)),
+    getAllTodoDetails: (todoId) => dispatch(getAllTodoDetails(todoId))
   }
 }
 

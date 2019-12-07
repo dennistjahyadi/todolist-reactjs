@@ -2,8 +2,12 @@ import WorkspaceAPI from '../api/workspace';
 
 export const getAllWorkspace = () => {
   return async (dispatch, getState) => {
+    try{
       const workspaces = await WorkspaceAPI.get()
       dispatch({ type: 'GET_ALL_WORKSPACES', workspaces })
+    }catch(err){
+      console.log(err)
+    }
   }
 }
 
