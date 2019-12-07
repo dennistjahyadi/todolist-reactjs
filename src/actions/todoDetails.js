@@ -29,6 +29,17 @@ export const editTodoDetails = (id, content) => {
   }
 }
 
+export const toggleCompleteTodoDetails = (id, isCompleted) => {
+  return async (dispatch, getState) => {
+    try{
+      await TodoDetailsAPI.toggleComplete(id, isCompleted)
+      dispatch({ type: 'TOGGLE_TODO_DETAILS', id, isCompleted })
+    }catch(err){
+      console.log("TOGGLE_TODO_DETAILS_ERROR", err)
+    }
+  }
+}
+
 export const deleteTodoDetails = (id) => {
   return async (dispatch, getState) => {
     try{

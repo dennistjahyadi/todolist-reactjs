@@ -8,7 +8,7 @@ import InputDialog from '../../components/inputDialog';
 import { connect } from 'react-redux'
 import { deleteWorkspace, selectedWorkspace } from "../../actions/workspace"
 import { deleteTodo, selectedTodo } from "../../actions/todo"
-import { deleteTodoDetails } from "../../actions/todoDetails"
+import { deleteTodoDetails, toggleCompleteTodoDetails } from "../../actions/todoDetails"
 import SideBar from '../../components/sideBar';
 import HomeContent from '../../components/HomeContent';
 
@@ -41,6 +41,7 @@ class HomeScreen extends React.Component {
   handleDeleteTodo = (id) => this.showDeleteConfirm("todos", id)
   handleEditTodoDetails = (todoDetailsId, content) => this.inputDialogRef.showModal("edit", "todoDetails", todoDetailsId, "Edit Todo Details", content, null )
   handleDeleteTodoDetails = (id) => this.showDeleteConfirm("todoDetails", id)
+  handleOnToggleComplete = (id, isCompleted) => this.props.toggleCompleteTodoDetails(id, isCompleted)
 
   handleAddTodo = (workspaceId) => {
     const extraData = { workspaceId }
@@ -98,7 +99,9 @@ class HomeScreen extends React.Component {
             onClickDeleteTodo={this.handleDeleteTodo}
             onClickAddTodoDetails={this.handleAddTodoDetails}
             onClickEditTodoDetails={this.handleEditTodoDetails}
-            onClickDeleteTodoDetails={this.handleDeleteTodoDetails}/>
+            onClickDeleteTodoDetails={this.handleDeleteTodoDetails}
+            onToggleComplete={this.handleOnToggleComplete}
+            />
             : null}
           
         </Layout>
@@ -122,6 +125,7 @@ const mapDispatchToProps = (dispatch) => {
     deleteWorkspace: (id) => dispatch(deleteWorkspace(id)),
     deleteTodo: (id) => dispatch(deleteTodo(id)),
     deleteTodoDetails: (id) => dispatch(deleteTodoDetails(id)),
+    toggleCompleteTodoDetails: (id, isCompleted) => dispatch(toggleCompleteTodoDetails(id, isCompleted))
   }
 }
 

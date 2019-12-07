@@ -20,6 +20,13 @@ const todoDetailsReducer = (state = initState, action) => {
         return todoDetails
       })
       return newState
+    
+    case "TOGGLE_TODO_DETAILS":
+      newState.list = state.list.map(todoDetails => {
+        if(todoDetails.id === action.id) todoDetails.isCompleted = action.isCompleted
+        return todoDetails
+      })
+      return newState
 
     case "DELETE_TODO_DETAILS":
       newState.list = state.list.filter(todoDetails => todoDetails.id !== action.deletedId)

@@ -56,6 +56,27 @@ class WorkspaceAPI{
   /**
    * 
    * @param {string} id 
+   * @param {boolean} isCompleted 
+   */
+  static async toggleComplete(id, isCompleted){
+    console.log(id, isCompleted)
+
+    const response = await fetch(process.env.REACT_APP_API_URL + "tododetails/toggle", {
+      method: 'POST',
+      body: JSON.stringify({ id, isCompleted: isCompleted }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + AuthAPI.getUserToken()
+      }
+    })
+    console.log(response)
+    
+    return ResponseAPI.handleResponse(response)
+  }
+
+  /**
+   * 
+   * @param {string} id 
    */
   static async destroy(id){
     const response = await fetch(process.env.REACT_APP_API_URL + "tododetails/destroy", {

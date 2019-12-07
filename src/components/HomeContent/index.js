@@ -13,6 +13,7 @@ const { Title } = Typography;
 //  onClickAddTodoDetails: function|required () => { return (todoId) }
 //  onClickEditTodoDetails: function|required () => { return (todoDetailsId) }
 //  onClickDeleteTodoDetails: function|required () => { return (todoDetailsId) }
+//  onToggleComplete: function|required () => { return (todoDetailsId, isCompleted) }
 //  todo: object|required
 //  workspace: string|required
 class HomeContent extends React.Component {
@@ -22,6 +23,7 @@ class HomeContent extends React.Component {
   handleAddTodoDetails = () => this.props.onClickAddTodoDetails(this.props.currentTodo.id)
   handleEditTodoDetails = (todoDetailsId, content) => this.props.onClickEditTodoDetails(todoDetailsId, content)
   handleDeleteTodoDetails = (todoDetailsId) => this.props.onClickDeleteTodoDetails(todoDetailsId)
+  handleToggleComplete = (todoDetailsId, isCompleted) => this.props.onToggleComplete(todoDetailsId, isCompleted)
   fetchData = () => (this.props.currentTodo.id)? this.props.getAllTodoDetails(this.props.currentTodo.id) : null
   
   constructor(props){
@@ -51,7 +53,7 @@ class HomeContent extends React.Component {
           return(
             <List.Item key={item.id} style={{ display: "flex", marginLeft: 100}} 
               actions={[editButton, deleteButton]}>
-              <Checkbox>{item.content}</Checkbox>
+              <Checkbox checked={item.isCompleted} onClick={() => this.handleToggleComplete(item.id, !item.isCompleted)}>{item.content}</Checkbox>
             </List.Item>
           )
         })}
